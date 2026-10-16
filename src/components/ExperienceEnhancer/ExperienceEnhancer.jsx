@@ -22,14 +22,16 @@ const ExperienceEnhancer = () => {
   const [dockOpen, setDockOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [query, setQuery] = useState('');
-  const [iqLanguage, setIqLanguage] = useState(siteLanguage === 'es' ? 'es' : 'en');
+  const defaultIqLang = siteLanguage === 'es' ? 'es' : 'en';
+  const [langOverride, setLangOverride] = useState({ site: siteLanguage, iq: defaultIqLang });
+  const iqLanguage = langOverride.site === siteLanguage ? langOverride.iq : defaultIqLang;
+  const setIqLanguage = (next) => {
+    const resolved = typeof next === 'function' ? next(iqLanguage) : next;
+    setLangOverride({ site: siteLanguage, iq: resolved });
+  };
   const [activeQuestion, setActiveQuestion] = useState('start');
   const isSpanish = iqLanguage === 'es';
   const shortcutPrefix = typeof navigator !== 'undefined' && navigator.platform.includes('Mac') ? 'Cmd' : 'Ctrl';
-
-  useEffect(() => {
-    setIqLanguage(siteLanguage === 'es' ? 'es' : 'en');
-  }, [siteLanguage]);
 
   useEffect(() => {
     const onKeyDown = (event) => {

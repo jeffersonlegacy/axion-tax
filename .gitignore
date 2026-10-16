@@ -17,9 +17,23 @@ dist-ssr
 server/data/*.json
 server/data/uploads/
 output/playwright/
+output/pdf/
 .playwright-cli/
 .run/
 tmp/
+
+# Unreferenced / duplicate raw media assets
+public/assets/Video1.mov
+public/assets/missing-tax-form-emergency.mp4
+public/assets/optional-demo-video.mp4
+public/assets/tax-transcript-video.mp4
+public/assets/faxion/eitc-connection.png
+public/assets/faxion/irs-scale.png
+public/assets/faxion/penalty-risk.png
+public/assets/faxion/refund-amounts.png
+public/assets/faxion/tax-burden-wheel.png
+public/assets/faxion/taxpayers-group.png
+public/assets/faxion/unclaimed-forms.png
 
 # Editor directories and files
 .vscode/*
