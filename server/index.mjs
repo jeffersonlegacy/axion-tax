@@ -17,13 +17,16 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '..');
 const distDir = path.join(projectRoot, 'dist');
-const dataDir = path.join(projectRoot, 'server', 'data');
+const dataDir = process.env.VERCEL ? '/tmp/axion-data' : path.join(projectRoot, 'server', 'data');
 const uploadsDir = path.join(dataDir, 'uploads');
 const consentLogFile = path.join(dataDir, 'update-consents.json');
 const portalStoreFile = path.join(dataDir, 'portal-workspaces.json');
 const port = Number(process.env.PORT || 8797);
 const app = express();
 const isProduction = process.env.NODE_ENV === 'production';
+const DEMO_WORKSPACE_ID = 'ws_demo_axion_2026';
+const DEMO_WORKSPACE_TOKEN = 'demo_axion_workspace_token_2026';
+const DEMO_CLIENT_EMAIL = 'demo.client@axiontax.com';
 
 const resendClient = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 const twilioClient = process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN
@@ -103,16 +106,191 @@ const upload = multer({
   },
 });
 
+const buildSeedDemoWorkspace = () => {
+  const now = new Date().toISOString();
+  const futureDate = new Date(Date.now() + 3 * 86400000).toISOString().slice(0, 10);
+  return {
+    id: DEMO_WORKSPACE_ID,
+    token: DEMO_WORKSPACE_TOKEN,
+    createdAt: now,
+    updatedAt: now,
+    client: {
+      firstName: 'Elena',
+      lastName: 'Vance',
+      email: DEMO_CLIENT_EMAIL,
+      phone: '(707) 555-0184',
+    },
+    taxProfessional: {
+      id: 'marcus',
+      name: 'Marcus',
+      phone: '(510) 555-0188',
+    },
+    appointments: [
+      {
+        id: 'appt_demo_01',
+        date: futureDate,
+        time: '11:30 AM',
+        type: '1099 & Schedule C Strategy Review',
+        status: 'Scheduled',
+        createdAt: now,
+      },
+    ],
+    documents: [
+      {
+        id: 'doc_demo_w2',
+        laneId: 'jobs',
+        kind: 'upload',
+        name: '2025-W2-Bay-Area-Health-Systems.svg',
+        note: 'OCR Verified [W-2] · Box 1 Wages: $94,200.00 · Fed Withheld: $14,820.00 · SHA-256: 8f4c...e91a',
+        mimeType: 'image/svg+xml',
+        size: 1840,
+        storedName: '2025-W2-Bay-Area-Health-Systems.svg',
+        uploadedAt: now,
+      },
+      {
+        id: 'doc_demo_1099',
+        laneId: 'business',
+        kind: 'upload',
+        name: '2025-1099-NEC-Stripe-Consulting.svg',
+        note: 'OCR Verified [1099-NEC] · Box 1 Nonemployee Comp: $68,400.00 · Payer TIN Verified · SHA-256: 3a9d...b102',
+        mimeType: 'image/svg+xml',
+        size: 1920,
+        storedName: '2025-1099-NEC-Stripe-Consulting.svg',
+        uploadedAt: now,
+      },
+      {
+        id: 'doc_demo_sched_c',
+        laneId: 'business',
+        kind: 'schedule-c-summary',
+        name: 'Schedule C Summary 2025.txt',
+        note: 'Gross $68,400 | Expenses $16,250 | Net $52,150',
+        mimeType: 'text/plain',
+        size: 420,
+        storedName: 'schedule-c-summary-2025.txt',
+        uploadedAt: now,
+      },
+      {
+        id: 'doc_demo_id',
+        laneId: 'personal',
+        kind: 'upload',
+        name: 'CA-Real-ID-Verification-Vance.svg',
+        note: 'OCR Verified [Gov ID] · Primary Taxpayer Identity & Address Confirmed',
+        mimeType: 'image/svg+xml',
+        size: 1640,
+        storedName: 'CA-Real-ID-Verification-Vance.svg',
+        uploadedAt: now,
+      },
+    ],
+    checklist: {
+      appointment: true,
+      income: true,
+      personal: true,
+      business: true,
+      priorYear: false,
+    },
+    updates: {
+      channel: 'email',
+      email: DEMO_CLIENT_EMAIL,
+      phone: '(707) 555-0184',
+      appointmentUpdates: true,
+      documentReminders: true,
+      statusUpdates: true,
+      taxDeadlineReminders: true,
+      consent: true,
+      active: true,
+    },
+    scheduleC: {
+      summary: {
+        gross: '$68,400',
+        expenses: '$16,250',
+        net: '$52,150',
+      },
+      payload: {
+        scheduleVersion: '2025',
+      },
+      updatedAt: now,
+      scheduleVersion: '2025',
+    },
+  };
+};
+
+const makeDemoSvg = (title, subtitle, lines) => `<svg xmlns="http://www.w3.org/2000/svg" width="760" height="440" viewBox="0 0 760 440">
+  <rect width="760" height="440" fill="#0d0d0d"/>
+  <rect x="20" y="20" width="720" height="400" rx="14" fill="#141414" stroke="#e60000" stroke-width="2"/>
+  <text x="48" y="72" fill="#e60000" font-family="monospace" font-size="14" font-weight="bold">AXION OCR VERIFIED TAX RECORD</text>
+  <text x="48" y="112" fill="#ffffff" font-family="sans-serif" font-size="24" font-weight="bold">${title}</text>
+  <text x="48" y="142" fill="#a8a8a8" font-family="sans-serif" font-size="15">${subtitle}</text>
+  <line x1="48" y1="166" x2="712" y2="166" stroke="#2c2c2c" stroke-width="1"/>
+  ${lines.map((line, idx) => `<text x="48" y="${208 + idx * 38}" fill="#e5e5e5" font-family="monospace" font-size="15">${line}</text>`).join('\n  ')}
+</svg>`;
+
 const ensureDataStore = async () => {
   await mkdir(dataDir, { recursive: true });
   await mkdir(uploadsDir, { recursive: true });
+
+  const demoUploadDir = path.join(uploadsDir, DEMO_WORKSPACE_ID);
+  await mkdir(demoUploadDir, { recursive: true });
+
+  const demoW2Path = path.join(demoUploadDir, '2025-W2-Bay-Area-Health-Systems.svg');
+  if (!existsSync(demoW2Path)) {
+    await writeFile(demoW2Path, makeDemoSvg(
+      'Form W-2 · Wage and Tax Statement (2025)',
+      'Employer: Bay Area Health Systems Inc. · Employee: Elena Vance',
+      [
+        'Box 1  Wages, tips, other comp:       $94,200.00',
+        'Box 2  Federal income tax withheld:   $14,820.00',
+        'Box 3  Social security wages:         $94,200.00',
+        'Box 16 State wages (CA):              $94,200.00',
+        'OCR Pipeline Status:                  PASS (Confidence 99.4%)',
+      ]
+    ), 'utf8');
+  }
+
+  const demo1099Path = path.join(demoUploadDir, '2025-1099-NEC-Stripe-Consulting.svg');
+  if (!existsSync(demo1099Path)) {
+    await writeFile(demo1099Path, makeDemoSvg(
+      'Form 1099-NEC · Nonemployee Compensation (2025)',
+      'Payer: Stripe / Vance Clinical Advisory LLC · Recipient: Elena Vance',
+      [
+        'Box 1  Nonemployee compensation:      $68,400.00',
+        'Box 4  Federal income tax withheld:   $0.00',
+        'Schedule C Mapping:                   Gross Receipts (Line 1)',
+        'OCR Pipeline Status:                  PASS (Confidence 99.1%)',
+      ]
+    ), 'utf8');
+  }
+
+  const demoIdPath = path.join(demoUploadDir, 'CA-Real-ID-Verification-Vance.svg');
+  if (!existsSync(demoIdPath)) {
+    await writeFile(demoIdPath, makeDemoSvg(
+      'California REAL ID · Identity & Residency Verification',
+      'Holder: Elena Vance · Vacaville, CA',
+      [
+        'Document Class:                       Government Photo ID',
+        'Address Match:                        Verified (Solano County, CA)',
+        'Expiration Check:                     Valid through 2029',
+        'OCR Pipeline Status:                  PASS (Identity Confirmed)',
+      ]
+    ), 'utf8');
+  }
+
+  const demoSchedPath = path.join(demoUploadDir, 'schedule-c-summary-2025.txt');
+  if (!existsSync(demoSchedPath)) {
+    await writeFile(demoSchedPath, [
+      'Schedule C Summary (2025)',
+      'Client: Elena Vance (Vance Clinical Advisory)',
+      'Gross Income: $68,400',
+      'Expenses: $16,250',
+      'Net Profit or Loss: $52,150',
+    ].join('\n'), 'utf8');
+  }
 
   if (!existsSync(consentLogFile)) {
     await writeFile(consentLogFile, '[]', 'utf8');
   }
 
   if (!existsSync(portalStoreFile)) {
-    await writeFile(portalStoreFile, JSON.stringify({ workspaces: [] }, null, 2), 'utf8');
+    await writeFile(portalStoreFile, JSON.stringify({ workspaces: [buildSeedDemoWorkspace()] }, null, 2), 'utf8');
   }
 };
 
@@ -346,9 +524,40 @@ const buildWorkspaceResponse = (workspace) => {
   };
 };
 
-const getWorkspaceContext = async (token) => {
+const getWorkspaceContext = async (token, req = null) => {
   const store = await readPortalStore();
-  const index = store.workspaces.findIndex((entry) => entry.token === token);
+  let index = store.workspaces.findIndex((entry) => entry.token === token);
+  if (index === -1 && token === DEMO_WORKSPACE_TOKEN) {
+    const seeded = buildSeedDemoWorkspace();
+    store.workspaces.push(seeded);
+    await writePortalStore(store);
+    index = store.workspaces.length - 1;
+  }
+  if (index === -1 && req?.headers?.['x-portal-snapshot']) {
+    try {
+      const decoded = JSON.parse(decodeURIComponent(String(req.headers['x-portal-snapshot'])));
+      if (decoded && decoded.client?.email) {
+        const rehydrated = {
+          id: decoded.id || createId('ws'),
+          token,
+          createdAt: decoded.createdAt || new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          client: decoded.client,
+          taxProfessional: decoded.taxProfessional || sanitizeTaxProfessional('marcus'),
+          appointments: Array.isArray(decoded.appointments) ? decoded.appointments : [],
+          documents: Array.isArray(decoded.documents) ? decoded.documents : [],
+          checklist: mergeChecklist(decoded.checklist),
+          updates: { ...DEFAULT_UPDATES, ...(decoded.updates || {}) },
+          scheduleC: decoded.scheduleC || null,
+        };
+        store.workspaces.push(rehydrated);
+        await writePortalStore(store);
+        index = store.workspaces.length - 1;
+      }
+    } catch {
+      // Ignore malformed snapshot header
+    }
+  }
   if (index === -1) return null;
   return { store, index, workspace: store.workspaces[index] };
 };
@@ -371,7 +580,7 @@ const portalAuth = async (req, res, next) => {
     return res.status(401).json({ ok: false, error: 'Portal access token is required.' });
   }
 
-  const context = await getWorkspaceContext(token);
+  const context = await getWorkspaceContext(token, req);
   if (!context) {
     return res.status(401).json({ ok: false, error: 'Portal session was not found. Please reopen your workspace.' });
   }
@@ -413,14 +622,18 @@ const makeDocumentRecord = ({ laneId, file, note = '', kind = 'upload', storedNa
   uploadedAt: new Date().toISOString(),
 });
 
-app.get('/healthz', (_req, res) => {
+const handleHealthCheck = (_req, res) => {
   res.json({
     ok: true,
     service: 'axion-tax',
+    runtime: process.env.VERCEL ? 'vercel-serverless' : 'node-server',
     emailConfigured: configuredChannels.email,
     textConfigured: configuredChannels.text,
   });
-});
+};
+
+app.get('/healthz', handleHealthCheck);
+app.get('/api/healthz', handleHealthCheck);
 
 app.use('/api/updates', updatesRateLimiter);
 app.use('/api/portal', portalRateLimiter);
@@ -529,11 +742,12 @@ app.post('/api/updates/test', portalAuth, async (req, res) => {
 });
 
 app.post('/api/portal/access', async (req, res) => {
-  const firstName = normalizeString(req.body?.firstName);
-  const lastName = normalizeString(req.body?.lastName);
-  const email = normalizeString(req.body?.email).toLowerCase();
-  const phone = normalizeString(req.body?.phone);
-  const taxProfessional = sanitizeTaxProfessional(req.body?.taxProfessionalId);
+  const isDemoRequest = Boolean(req.body?.demo) || normalizeString(req.body?.email).toLowerCase() === DEMO_CLIENT_EMAIL;
+  const firstName = normalizeString(req.body?.firstName) || (isDemoRequest ? 'Elena' : '');
+  const lastName = normalizeString(req.body?.lastName) || (isDemoRequest ? 'Vance' : '');
+  const email = normalizeString(req.body?.email).toLowerCase() || (isDemoRequest ? DEMO_CLIENT_EMAIL : '');
+  const phone = normalizeString(req.body?.phone) || (isDemoRequest ? '(707) 555-0184' : '');
+  const taxProfessional = sanitizeTaxProfessional(req.body?.taxProfessionalId) || (isDemoRequest ? sanitizeTaxProfessional('marcus') : null);
 
   if (!firstName || !lastName) {
     return res.status(400).json({ ok: false, error: 'First and last name are required.' });
@@ -547,7 +761,7 @@ app.post('/api/portal/access', async (req, res) => {
 
   const store = await readPortalStore();
   const existingIndex = store.workspaces.findIndex((entry) => entry.client?.email?.toLowerCase() === email);
-  const nextToken = createToken();
+  const nextToken = isDemoRequest ? DEMO_WORKSPACE_TOKEN : createToken();
   const now = new Date().toISOString();
 
   if (existingIndex !== -1) {
@@ -579,6 +793,18 @@ app.post('/api/portal/access', async (req, res) => {
       ok: true,
       token: workspace.token,
       workspace: buildWorkspaceResponse(workspace),
+      configuredChannels,
+    });
+  }
+
+  if (isDemoRequest) {
+    const demoWorkspace = buildSeedDemoWorkspace();
+    store.workspaces.push(demoWorkspace);
+    await writePortalStore(store);
+    return res.status(200).json({
+      ok: true,
+      token: demoWorkspace.token,
+      workspace: buildWorkspaceResponse(demoWorkspace),
       configuredChannels,
     });
   }
@@ -905,14 +1131,18 @@ app.post('/api/portal/schedule-c', portalAuth, async (req, res) => {
   return res.status(201).json({ ok: true, workspace: buildWorkspaceResponse(workspace) });
 });
 
-if (isProduction) {
+if (isProduction && !process.env.VERCEL) {
   app.use(express.static(distDir));
   app.get('*', (_req, res) => {
     res.sendFile(path.join(distDir, 'index.html'));
   });
 }
 
-app.listen(port, async () => {
-  await ensureDataStore();
-  console.log(`AXION API listening on http://127.0.0.1:${port}`);
-});
+if (!process.env.VERCEL) {
+  app.listen(port, async () => {
+    await ensureDataStore();
+    console.log(`AXION API listening on http://127.0.0.1:${port}`);
+  });
+}
+
+export default app;

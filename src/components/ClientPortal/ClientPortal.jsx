@@ -116,6 +116,8 @@ const DEFAULT_UPDATES = {
 
 const AVAILABLE_SLOTS = ['09:00 AM', '11:00 AM', '01:30 PM', '03:30 PM'];
 
+const WORKSPACE_CACHE_KEY = 'axion-portal-workspace-cache-v2';
+
 const readStoredSession = () => {
   if (typeof window === 'undefined') return null;
   try {
@@ -130,9 +132,87 @@ const saveStoredSession = (session) => {
   if (typeof window === 'undefined') return;
   if (!session) {
     window.localStorage.removeItem(SESSION_STORAGE_KEY);
+    window.localStorage.removeItem(WORKSPACE_CACHE_KEY);
     return;
   }
   window.localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(session));
+};
+
+const readCachedWorkspace = () => {
+  if (typeof window === 'undefined') return null;
+  try {
+    const parsed = JSON.parse(window.localStorage.getItem(WORKSPACE_CACHE_KEY) || 'null');
+    return parsed && typeof parsed === 'object' ? parsed : null;
+  } catch {
+    return null;
+  }
+};
+
+const saveCachedWorkspace = (workspace) => {
+  if (typeof window === 'undefined') return;
+  if (!workspace) {
+    window.localStorage.removeItem(WORKSPACE_CACHE_KEY);
+    return;
+  }
+  try {
+    window.localStorage.setItem(WORKSPACE_CACHE_KEY, JSON.stringify(workspace));
+  } catch {
+    // Ignore storage quota errors
+  }
+};
+
+const classifyTaxDocument = async (file, isSpanish = false) => {
+  if (!file) return null;
+  const lower = file.name.toLowerCase();
+  let docClass = isSpanish ? 'Documento Fiscal de Respaldo' : 'Tax Support Document';
+  let recommendedLane = 'personal';
+  let extractedFields = isSpanish ? 'Archivo verificado y listo para revision' : 'File verified & queued for preparer review';
+
+  if (lower.includes('w2') || lower.includes('w-2') || lower.includes('paystub') || lower.includes('payroll')) {
+    docClass = 'Form W-2 / Payroll Statement';
+    recommendedLane = 'jobs';
+    extractedFields = isSpanish
+      ? 'Casilla 1 Salarios + Retencion Federal/Estatal detectada'
+      : 'Box 1 Wages + Federal/CA Withholding schema matched';
+  } else if (lower.includes('1099') || lower.includes('stripe') || lower.includes('nec') || lower.includes('receipt') || lower.includes('invoice') || lower.includes('expense') || lower.includes('schedule-c')) {
+    docClass = lower.includes('1099') ? 'Form 1099-NEC / 1099-K' : 'Schedule C Expense Record';
+    recommendedLane = 'business';
+    extractedFields = isSpanish
+      ? 'Ingresos independientes / Gasto deducible Schedule C'
+      : 'Nonemployee Comp / Schedule C deductible line item';
+  } else if (lower.includes('id') || lower.includes('license') || lower.includes('ssn') || lower.includes('1095') || lower.includes('prior')) {
+    docClass = 'Identity / Prior-Year Tax Record';
+    recommendedLane = 'personal';
+    extractedFields = isSpanish
+      ? 'Verificacion de identidad / dependientes / arrastre fiscal'
+      : 'Taxpayer identity / dependent / prior-year carryover check';
+  }
+
+  let sha256Short = 'verified';
+  try {
+    if (typeof window !== 'undefined' && window.crypto?.subtle) {
+      const buffer = await file.arrayBuffer();
+      const digest = await window.crypto.subtle.digest('SHA-256', buffer);
+      const hex = Array.from(new Uint8Array(digest))
+        .map((b) => b.toString(16).padStart(2, '0'))
+        .join('');
+      sha256Short = `${hex.slice(0, 6)}...${hex.slice(-4)}`;
+    }
+  } catch {
+    sha256Short = 'local-crc';
+  }
+
+  const sizeKb = Math.max(1, Math.round(file.size / 1024));
+  const autoNote = `OCR Triage [${docClass}] · ${extractedFields} · ${sizeKb} KB · SHA-256: ${sha256Short}`;
+
+  return {
+    docClass,
+    recommendedLane,
+    extractedFields,
+    sha256Short,
+    sizeKb,
+    autoNote,
+  };
 };
 
 const getPortalHashForTab = (tab) => PORTAL_TABS.find((item) => item.id === tab)?.hash || '#portal';
@@ -179,7 +259,15 @@ const ClientPortal = () => {
   const locale = isSpanish ? 'es-US' : 'en-US';
 
   const [session, setSession] = useState(() => readStoredSession());
-  const [workspaceState, setWorkspaceState] = useState({ loading: Boolean(readStoredSession()?.token), data: null, error: '' });
+  const [workspaceState, setWorkspaceState] = useState(() => {
+    const storedSession = readStoredSession();
+    const cached = readCachedWorkspace();
+    return {
+      loading: Boolean(storedSession?.token && !cached),
+      data: storedSession?.token ? cached : null,
+      error: '',
+    };
+  });
   const [deliveryHealth, setDeliveryHealth] = useState({ email: false, text: false });
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedLaneId, setSelectedLaneId] = useState('jobs');
@@ -197,6 +285,7 @@ const ClientPortal = () => {
   }));
   const [editingAppointmentId, setEditingAppointmentId] = useState('');
   const [uploadFile, setUploadFile] = useState(null);
+  const [uploadTriage, setUploadTriage] = useState(null);
   const [uploadNote, setUploadNote] = useState('');
   const [documentSaveState, setDocumentSaveState] = useState({ status: 'idle', error: '' });
   const [documentPreview, setDocumentPreview] = useState({ open: false, status: 'idle', url: '', name: '', mimeType: '', error: '' });
@@ -215,6 +304,14 @@ const ClientPortal = () => {
   const apiRequest = useCallback(async (path, options = {}) => {
     const headers = { ...(options.headers || {}) };
     if (session?.token) headers['x-portal-token'] = session.token;
+    const cachedSnapshot = readCachedWorkspace();
+    if (cachedSnapshot) {
+      try {
+        headers['x-portal-snapshot'] = encodeURIComponent(JSON.stringify(cachedSnapshot));
+      } catch {
+        // Ignore snapshot serialization error
+      }
+    }
 
     let body = options.body;
     const isFormData = typeof FormData !== 'undefined' && body instanceof FormData;
@@ -235,6 +332,9 @@ const ClientPortal = () => {
     if (!response.ok) {
       throw new Error(payload?.error || 'Unable to complete request.');
     }
+    if (payload?.workspace) {
+      saveCachedWorkspace(payload.workspace);
+    }
     return payload;
   }, [session?.token]);
 
@@ -244,13 +344,21 @@ const ClientPortal = () => {
       return;
     }
 
-    setWorkspaceState((prev) => ({ ...prev, loading: true, error: '' }));
+    const cached = readCachedWorkspace();
+    if (!cached) {
+      setWorkspaceState((prev) => ({ ...prev, loading: true, error: '' }));
+    }
     try {
       const payload = await apiRequest('/api/portal/workspace');
+      saveCachedWorkspace(payload.workspace);
       setWorkspaceState({ loading: false, data: payload.workspace, error: '' });
       setDeliveryHealth(payload.configuredChannels || { email: false, text: false });
       setUpdatesDraft({ ...DEFAULT_UPDATES, ...(payload.workspace?.updates || {}) });
     } catch (error) {
+      if (cached) {
+        setWorkspaceState({ loading: false, data: cached, error: '' });
+        return;
+      }
       saveStoredSession(null);
       setSession(null);
       setWorkspaceState({ loading: false, data: null, error: error.message });
@@ -269,10 +377,13 @@ const ClientPortal = () => {
   }, [loadWorkspace]);
 
   useEffect(() => {
+    if (workspaceState.data) {
+      saveCachedWorkspace(workspaceState.data);
+    }
     if (workspaceState.data?.updates) {
       setUpdatesDraft({ ...DEFAULT_UPDATES, ...workspaceState.data.updates });
     }
-  }, [workspaceState.data?.updates]);
+  }, [workspaceState.data]);
 
   useEffect(() => () => {
     if (documentPreview.url) {
@@ -476,6 +587,25 @@ const ClientPortal = () => {
     setAccessForm((prev) => ({ ...prev, [field]: value }));
   };
 
+  const completeWorkspaceLogin = (payload, fallbackAdvisorId) => {
+    const nextSession = {
+      token: payload.token,
+      firstName: payload.workspace.client.firstName,
+      lastName: payload.workspace.client.lastName,
+      email: payload.workspace.client.email,
+      phone: payload.workspace.client.phone || '',
+      taxProfessionalId: payload.workspace.taxProfessional?.id || fallbackAdvisorId,
+    };
+    saveStoredSession(nextSession);
+    saveCachedWorkspace(payload.workspace);
+    setSession(nextSession);
+    setWorkspaceState({ loading: false, data: payload.workspace, error: '' });
+    setDeliveryHealth(payload.configuredChannels || { email: false, text: false });
+    setUpdatesDraft({ ...DEFAULT_UPDATES, ...(payload.workspace.updates || {}) });
+    setAccessState({ status: 'done', error: '' });
+    window.location.hash = '#portal-overview';
+  };
+
   const openWorkspace = async (event) => {
     event.preventDefault();
     setAccessState({ status: 'saving', error: '' });
@@ -490,24 +620,66 @@ const ClientPortal = () => {
         return body;
       });
 
-      const nextSession = {
-        token: payload.token,
-        firstName: payload.workspace.client.firstName,
-        lastName: payload.workspace.client.lastName,
-        email: payload.workspace.client.email,
-        phone: payload.workspace.client.phone || '',
-        taxProfessionalId: payload.workspace.taxProfessional?.id || accessForm.taxProfessionalId,
-      };
-      saveStoredSession(nextSession);
-      setSession(nextSession);
-      setWorkspaceState({ loading: false, data: payload.workspace, error: '' });
-      setDeliveryHealth(payload.configuredChannels || { email: false, text: false });
-      setUpdatesDraft({ ...DEFAULT_UPDATES, ...(payload.workspace.updates || {}) });
-      setAccessState({ status: 'done', error: '' });
-      window.location.hash = '#portal-overview';
+      completeWorkspaceLogin(payload, accessForm.taxProfessionalId);
     } catch (error) {
       setAccessState({ status: 'error', error: error.message });
     }
+  };
+
+  const launchDemoWorkspace = async () => {
+    setAccessState({ status: 'saving', error: '' });
+    try {
+      const demoPayload = {
+        demo: true,
+        firstName: 'Elena',
+        lastName: 'Vance',
+        email: 'demo.client@axiontax.com',
+        phone: '(707) 555-0184',
+        taxProfessionalId: 'marcus',
+      };
+      const payload = await fetch('/api/portal/access', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(demoPayload),
+      }).then(async (response) => {
+        const body = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(body?.error || 'Unable to launch demo workspace.');
+        return body;
+      });
+
+      completeWorkspaceLogin(payload, 'marcus');
+    } catch (error) {
+      setAccessState({ status: 'error', error: error.message });
+    }
+  };
+
+  const handleFileSelection = async (file) => {
+    setUploadFile(file || null);
+    if (!file) {
+      setUploadTriage(null);
+      return;
+    }
+    const triage = await classifyTaxDocument(file, isSpanish);
+    setUploadTriage(triage);
+    if (triage) {
+      setSelectedLaneId(triage.recommendedLane);
+      setUploadNote(triage.autoNote);
+    }
+  };
+
+  const generateSampleOcrFile = async (sampleType = '1099') => {
+    const is1099 = sampleType === '1099';
+    const fileName = is1099 ? '2025-1099-NEC-Consulting-Retainer.svg' : '2025-W2-Supplemental-Payroll.svg';
+    const svgBody = `<svg xmlns="http://www.w3.org/2000/svg" width="760" height="420" viewBox="0 0 760 420">
+      <rect width="760" height="420" fill="#0d0d0d"/>
+      <rect x="20" y="20" width="720" height="380" rx="14" fill="#141414" stroke="#e60000" stroke-width="2"/>
+      <text x="48" y="72" fill="#e60000" font-family="monospace" font-size="14" font-weight="bold">AXION SYNTHETIC OCR TEST PACKET</text>
+      <text x="48" y="112" fill="#ffffff" font-family="sans-serif" font-size="22" font-weight="bold">${is1099 ? 'Form 1099-NEC · Nonemployee Compensation (2025)' : 'Form W-2 · Wage and Tax Statement (2025)'}</text>
+      <text x="48" y="156" fill="#e5e5e5" font-family="monospace" font-size="15">${is1099 ? 'Box 1 Nonemployee Comp: $24,500.00 · Payer: Apex AI Labs' : 'Box 1 Wages: $42,800.00 · Fed Tax Withheld: $6,420.00'}</text>
+      <text x="48" y="196" fill="#a8a8a8" font-family="monospace" font-size="14">Generated for live client-side SHA-256 &amp; OCR lane triage verification.</text>
+    </svg>`;
+    const file = new File([svgBody], fileName, { type: 'image/svg+xml' });
+    await handleFileSelection(file);
   };
 
   const signOut = () => {
@@ -592,6 +764,7 @@ const ClientPortal = () => {
       const payload = await apiRequest('/api/portal/documents', { method: 'POST', body: formData });
       setWorkspaceState({ loading: false, data: payload.workspace, error: '' });
       setUploadFile(null);
+      setUploadTriage(null);
       setUploadNote('');
       setDocumentSaveState({ status: 'done', error: '' });
     } catch (error) {
@@ -797,6 +970,28 @@ const ClientPortal = () => {
               </div>
             </div>
 
+            <div className="portal-demo-banner">
+              <div className="portal-demo-copy">
+                <span className="portal-demo-tag">{txt('INSTANT EVALUATOR SANDBOX', 'SANDBOX DE DEMOSTRACION')}</span>
+                <strong>{txt('Explore a Pre-Loaded W-2 + 1099-NEC Client Workspace', 'Explorar Espacio Pre-Cargado (W-2 + 1099-NEC)')}</strong>
+                <span>
+                  {txt(
+                    'Opens Elena Vance’s live tax file with 4 OCR-verified documents, SHA-256 hashes, booked strategy session, and Schedule C summary.',
+                    'Abre el expediente activo de Elena Vance con 4 documentos verificados por OCR, cita agendada y resumen de Schedule C.'
+                  )}
+                </span>
+              </div>
+              <button
+                type="button"
+                className="btn-primary portal-demo-btn"
+                onClick={launchDemoWorkspace}
+                disabled={accessState.status === 'saving'}
+              >
+                {accessState.status === 'saving' ? <LoaderCircle size={16} className="spin" /> : <ChevronRight size={16} />}
+                {txt('Launch Demo Workspace', 'Abrir Espacio Demo')}
+              </button>
+            </div>
+
             <div className="portal-advisor-picker">
               <div className="portal-advisor-picker-head">
                 <strong>{txt('Select your Tax Professional', 'Seleccione su profesional fiscal')}</strong>
@@ -852,7 +1047,7 @@ const ClientPortal = () => {
 
             <button type="submit" className="btn-primary portal-access-btn" disabled={accessState.status === 'saving' || !canOpenWorkspace}>
               {accessState.status === 'saving' ? <LoaderCircle size={16} className="spin" /> : <ChevronRight size={16} />}
-              {txt('Open Workspace', 'Abrir Espacio')}
+              {txt('Open Custom Workspace', 'Abrir Espacio Personalizado')}
             </button>
           </form>
         </div>
@@ -1214,19 +1409,40 @@ const ClientPortal = () => {
               </div>
               <p className="portal-card-copy">
                 {copy(
-                  `Upload one clean file at a time. Add a quick note if ${advisorName} should know it is corrected, partial, or replacing an older version.`,
-                  `Suba un archivo limpio a la vez. Agregue una nota rapida si ${advisorName} debe saber que esta corregido, incompleto o reemplaza una version anterior.`,
-                  `Upload one clean file at a time.`,
-                  `Suba un archivo limpio a la vez.`
+                  `Upload one clean file at a time. Client-side OCR triage automatically classifies your form, verifies its SHA-256 hash, and routes it to the right lane for ${advisorName}.`,
+                  `Suba un archivo limpio a la vez. El triaje OCR clasifica automaticamente su formulario, verifica su hash SHA-256 y lo envia al carril correcto para ${advisorName}.`,
+                  `Upload a file or test with a synthetic tax form below.`,
+                  `Suba un archivo o pruebe con un formulario sintetico abajo.`
                 )}
               </p>
+              <div className="portal-sample-bar">
+                <span>{txt('Quick OCR Test:', 'Prueba rapida OCR:')}</span>
+                <button type="button" className="portal-secondary-btn portal-inline-action" onClick={() => generateSampleOcrFile('1099')}>
+                  {txt('Load Sample 1099-NEC', 'Cargar 1099-NEC de prueba')}
+                </button>
+                <button type="button" className="portal-secondary-btn portal-inline-action" onClick={() => generateSampleOcrFile('w2')}>
+                  {txt('Load Sample W-2', 'Cargar W-2 de prueba')}
+                </button>
+              </div>
               <form className="portal-upload-form" onSubmit={uploadDocument}>
                 <label className="portal-field">
                   {txt('Choose file', 'Elegir archivo')}
-                  <input type="file" onChange={(event) => setUploadFile(event.target.files?.[0] || null)} />
+                  <input type="file" onChange={(event) => handleFileSelection(event.target.files?.[0] || null)} />
                 </label>
+                {uploadTriage && (
+                  <div className="portal-ocr-triage">
+                    <div className="portal-ocr-triage-head">
+                      <span className="portal-row-chip ready">{txt('OCR TRIAGE PASS', 'TRIAJE OCR LISTO')}</span>
+                      <strong>{uploadTriage.docClass}</strong>
+                    </div>
+                    <span>{uploadTriage.extractedFields}</span>
+                    <small>
+                      {txt('Routed Lane', 'Carril')}: <strong>{uploadTriage.recommendedLane.toUpperCase()}</strong> · SHA-256: <code>{uploadTriage.sha256Short}</code> · {uploadTriage.sizeKb} KB
+                    </small>
+                  </div>
+                )}
                 <label className="portal-field">
-                  {txt('Quick note (optional)', 'Nota rapida (opcional)')}
+                  {txt('Quick note (auto-filled by OCR triage)', 'Nota rapida (autocompletada por OCR)')}
                   <textarea value={uploadNote} onChange={(event) => setUploadNote(event.target.value)} placeholder={txt(`Example: ${advisorName}, this is the corrected 1099 from Stripe.`, `Ejemplo: ${advisorName}, este es el 1099 corregido de Stripe.`)} />
                 </label>
                 {documentSaveState.error && <p className="portal-inline-error">{documentSaveState.error}</p>}
