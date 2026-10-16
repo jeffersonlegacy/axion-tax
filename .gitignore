@@ -20,6 +20,7 @@ output/playwright/
 output/pdf/
 .playwright-cli/
 .run/
+.vercel
 tmp/
 
 # Unreferenced / duplicate raw media assets

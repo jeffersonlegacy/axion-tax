@@ -1,6 +1,6 @@
 # Axion Tax & Beyond — Intelligent B2B Tax Intake & OCR Client Portal
 
-> **Live Production Frontend:** [https://axion-tax.vercel.app](https://axion-tax.vercel.app)  
+> **Live Production Frontend:** [https://axion-tax-beyond.vercel.app](https://axion-tax-beyond.vercel.app)  
 > **Architecture:** Decoupled Vite SPA (`src/`) + Node.js/ESM Backend API (`server/index.mjs`) + Playwright/Python Artifact Pipeline  
 
 ## 1. Executive Summary & Problem Statement
@@ -46,7 +46,7 @@ graph LR
 ## 3. Key Engineering Decisions & Production Highlights
 
 ### Decoupled Cloud Deployment (`Vercel` + `render.yaml`)
-* **Frontend Edge Delivery:** Built with **Vite (`vite.config.js`)** and deployed to **Vercel** (`axion-tax.vercel.app`) for sub-second static asset delivery and responsive mobile document capture.
+* **Frontend Edge Delivery:** Built with **Vite (`vite.config.js`)** and deployed to **Vercel** (`axion-tax-beyond.vercel.app`) for sub-second static asset delivery and responsive mobile document capture.
 * **Backend ESM Service:** Isolated stateful API routes, OCR processing, and intake orchestration inside a dedicated **Node.js ECMAScript Module (`server/index.mjs`)** declaratively provisioned via **`render.yaml`**.
 
 ### Intelligent Document Processing (OCR Upload Pipeline)
