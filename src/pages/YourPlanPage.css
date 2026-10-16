@@ -1,0 +1,317 @@
+.your-plan-page {
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 7.6rem 0 4.4rem;
+  display: grid;
+  gap: 1.2rem;
+}
+
+.your-plan-hero,
+.your-plan-highlight,
+.your-plan-step,
+.your-plan-close {
+  background:
+    radial-gradient(circle at top right, rgba(230, 0, 0, 0.15), transparent 35%),
+    linear-gradient(150deg, rgba(10, 10, 10, 0.97), rgba(18, 16, 16, 0.93));
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.your-plan-kicker {
+  margin: 0;
+  color: #ffb8b8;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.your-plan-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.88fr);
+  gap: 1.1rem;
+  align-items: center;
+  padding: 1.2rem;
+}
+
+.your-plan-hero h1,
+.your-plan-section-head h2,
+.your-plan-highlight h2,
+.your-plan-close h2 {
+  margin: 0.45rem 0 0;
+  color: #fff;
+  line-height: 1.02;
+}
+
+.your-plan-hero h1 {
+  font-size: clamp(2.2rem, 4vw, 3.45rem);
+  max-width: 12ch;
+}
+
+.your-plan-lead,
+.your-plan-section-head p,
+.your-plan-highlight p,
+.your-plan-step p,
+.your-plan-close p {
+  color: var(--color-text-muted);
+  line-height: 1.62;
+}
+
+.your-plan-lead {
+  margin-top: 1rem;
+  max-width: 58rem;
+  font-size: 1.02rem;
+}
+
+.your-plan-actions {
+  margin-top: 1.15rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.your-plan-outcomes {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.your-plan-outcomes span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 38px;
+  padding: 0.55rem 0.82rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f3dddd;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.your-plan-hero-visual,
+.your-plan-step-visual {
+  overflow: hidden;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.your-plan-hero-visual {
+  min-height: 420px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.32);
+}
+
+.your-plan-hero-visual img,
+.your-plan-step-visual img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.your-plan-highlights {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.your-plan-highlight {
+  padding: 1.1rem;
+  display: grid;
+  gap: 0.72rem;
+}
+
+.your-plan-highlight h2 {
+  font-size: 1.35rem;
+}
+
+.your-plan-highlight p {
+  margin: 0;
+}
+
+.your-plan-steps {
+  display: grid;
+  gap: 1rem;
+}
+
+.your-plan-section-head {
+  display: grid;
+  gap: 0.35rem;
+  max-width: 760px;
+}
+
+.your-plan-step-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.your-plan-step {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(360px, 1.08fr);
+  gap: 1rem;
+  align-items: stretch;
+  padding: 1rem;
+}
+
+.your-plan-step.reverse {
+  grid-template-columns: minmax(360px, 1.08fr) minmax(0, 0.92fr);
+}
+
+.your-plan-step.reverse .your-plan-step-copy {
+  order: 2;
+}
+
+.your-plan-step.reverse .your-plan-step-visual {
+  order: 1;
+}
+
+.your-plan-step-copy {
+  display: grid;
+  gap: 0.82rem;
+  align-content: center;
+}
+
+.your-plan-step-top {
+  display: flex;
+  align-items: center;
+  gap: 0.72rem;
+}
+
+.your-plan-step-number {
+  width: 2.55rem;
+  height: 2.55rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(230, 0, 0, 0.14);
+  border: 1px solid rgba(230, 0, 0, 0.4);
+  color: #ffd1d1;
+  font-weight: 800;
+}
+
+.your-plan-step-eyebrow {
+  color: #ffd0d0;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.your-plan-step h3 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(1.35rem, 2.1vw, 2rem);
+  line-height: 1.08;
+  max-width: 18ch;
+}
+
+.your-plan-step p {
+  margin: 0;
+}
+
+.your-plan-step-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  padding: 0.95rem 1rem;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #f0d3d3;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.your-plan-step-visual {
+  min-height: 320px;
+  box-shadow: 0 24px 40px rgba(0, 0, 0, 0.28);
+}
+
+.your-plan-step-visual img {
+  object-position: top center;
+}
+
+.your-plan-close {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.2rem;
+}
+
+.your-plan-close-actions {
+  display: grid;
+  gap: 0.75rem;
+  justify-items: end;
+}
+
+.your-plan-close-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.72rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f1dddd;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+@media (max-width: 1180px) {
+  .your-plan-highlights {
+    grid-template-columns: 1fr;
+  }
+
+  .your-plan-step,
+  .your-plan-step.reverse {
+    grid-template-columns: 1fr;
+  }
+
+  .your-plan-step.reverse .your-plan-step-copy,
+  .your-plan-step.reverse .your-plan-step-visual {
+    order: initial;
+  }
+}
+
+@media (max-width: 980px) {
+  .your-plan-hero {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .your-plan-page {
+    width: min(1180px, calc(100% - 1.1rem));
+    padding-top: 6.8rem;
+    padding-bottom: 3rem;
+  }
+
+  .your-plan-hero,
+  .your-plan-highlight,
+  .your-plan-step,
+  .your-plan-close {
+    padding: 1.1rem;
+    border-radius: 20px;
+  }
+
+  .your-plan-hero-visual {
+    min-height: 260px;
+  }
+
+  .your-plan-step-visual {
+    min-height: 230px;
+  }
+
+  .your-plan-close {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .your-plan-close-actions {
+    justify-items: stretch;
+  }
+}

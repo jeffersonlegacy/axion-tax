@@ -1,0 +1,144 @@
+.mock-schedule-c-container {
+  background-color: #fdfdfd;
+  color: #111;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 1rem;
+  font-family: 'Times New Roman', Times, serif;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.form-header {
+  display: flex;
+  border-bottom: 2px solid #000;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.form-title-block, .form-year-block {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-title-block h2 {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin: 0;
+  line-height: 1.1;
+}
+
+.form-desc-block {
+  flex: 3;
+  text-align: center;
+  border-left: 1px solid #000;
+  border-right: 1px solid #000;
+  padding: 0 0.5rem;
+}
+
+.form-desc-block h3 {
+  font-size: 1.1rem;
+  margin: 0 0 0.5rem 0;
+  text-transform: uppercase;
+}
+
+.form-desc-block p {
+  font-size: 0.7rem;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.form-year-block {
+  align-items: flex-end;
+  text-align: right;
+  font-size: 0.7rem;
+}
+
+.form-year-block .year {
+  font-size: 1.5rem;
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+  margin: 0.2rem 0;
+}
+
+.form-section-title {
+  background-color: #eaeaea;
+  border-top: 2px solid #000;
+  border-bottom: 1px solid #000;
+  padding: 0.2rem;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.part-label {
+  background-color: #000;
+  color: #fff;
+  padding: 0 0.3rem;
+  margin-right: 0.5rem;
+}
+
+.form-grid {
+  display: flex;
+  flex-direction: column;
+  font-family: Arial, sans-serif;
+  font-size: 0.8rem;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px dotted #ccc;
+  min-height: 1.8rem;
+}
+
+.cols-split {
+  display: flex;
+  justify-content: space-between;
+}
+
+.col-left, .col-right {
+  display: flex;
+  width: 48%;
+  align-items: center;
+}
+
+.line-num {
+  font-weight: bold;
+  min-width: 25px;
+}
+
+.line-desc {
+  flex: 1;
+}
+
+.line-val-box {
+  width: 80px;
+  background-color: #e0f2fe; /* Light blue styling for user input */
+  color: #0369a1;
+  text-align: right;
+  padding: 0 4px;
+  min-height: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  border-bottom: 1px solid #000;
+  border-left: 1px solid #000;
+}
+
+.val-box-right {
+  width: 100px;
+}
+
+.mock-footer {
+  margin-top: 1rem;
+  font-size: 0.65rem;
+  text-align: center;
+  color: var(--color-danger);
+  font-family: Arial, sans-serif;
+  font-weight: 600;
+}

@@ -1,0 +1,203 @@
+.hero {
+  position: relative;
+  min-height: 94vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6rem 1rem 1.75rem;
+  overflow: hidden;
+}
+
+.hero-video-container,
+.hero-bg-ambient,
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-video-container {
+  z-index: 0;
+}
+
+.hero-video-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.36;
+  filter: saturate(1.04) contrast(1.05);
+}
+
+.hero-bg-ambient {
+  z-index: 1;
+  background:
+    radial-gradient(circle at 16% 18%, rgba(255, 92, 92, 0.22), transparent 30%),
+    radial-gradient(circle at 82% 14%, rgba(230, 0, 0, 0.16), transparent 28%),
+    linear-gradient(145deg, rgba(6, 6, 6, 0.76), rgba(12, 11, 11, 0.74) 40%, rgba(6, 6, 6, 0.86));
+}
+
+.hero-overlay {
+  z-index: 2;
+  background: linear-gradient(180deg, rgba(9, 9, 9, 0.5), rgba(10, 10, 10, 0.84));
+}
+
+.hero-content {
+  position: relative;
+  z-index: 4;
+  width: min(1040px, 100%);
+  margin: 0 auto;
+  text-align: center;
+  padding: 1.05rem 1.1rem 1.45rem;
+  border-radius: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background:
+    radial-gradient(circle at top right, rgba(230, 0, 0, 0.16), transparent 34%),
+    linear-gradient(150deg, rgba(7, 7, 7, 0.88), rgba(17, 15, 15, 0.84));
+  box-shadow: 0 34px 80px rgba(0, 0, 0, 0.55), 0 0 32px rgba(230, 0, 0, 0.16);
+  backdrop-filter: blur(10px);
+}
+
+.hero-premium-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  margin-bottom: 0.55rem;
+}
+
+.hero-premium-title {
+  font-size: 0.75rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.hero-premium-subtitle {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #ffd9d9;
+  max-width: 420px;
+}
+
+.hero-brand-frame {
+  width: min(100%, 860px);
+  margin: 0 auto 1.15rem;
+  aspect-ratio: 16 / 7;
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 198, 198, 0.24);
+  box-shadow:
+    0 26px 60px rgba(0, 0, 0, 0.62),
+    0 0 24px rgba(230, 0, 0, 0.16),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  transform: perspective(1800px) rotateX(1deg);
+  position: relative;
+}
+
+.hero-brand-frame::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 14%),
+    linear-gradient(0deg, rgba(0, 0, 0, 0.28), transparent 38%);
+}
+
+.hero-brand-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center top;
+  transform: scale(1.02);
+  filter: saturate(1.06) contrast(1.05);
+}
+
+.hero-title {
+  margin: 0;
+  font-size: clamp(2.15rem, 5vw, 3.8rem);
+  line-height: 1.03;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+  text-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+  max-width: 14ch;
+  margin-inline: auto;
+}
+
+.hero-subtitle {
+  max-width: 780px;
+  margin: 0.9rem auto 0;
+  font-size: clamp(0.98rem, 2vw, 1.1rem);
+  line-height: 1.56;
+  color: #ededed;
+  text-wrap: pretty;
+}
+
+.hero-origin {
+  margin: 0.65rem auto 0;
+  font-size: 1rem;
+  max-width: 780px;
+  color: #ffebcf;
+  letter-spacing: 0.02em;
+}
+
+.hero-actions {
+  margin-top: 1.25rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.hero-guides {
+  margin-top: 0.85rem;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.hero-guide-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0.58rem 0.82rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: #f4d1d1;
+  font-size: 0.83rem;
+  font-weight: 700;
+  transition: transform var(--transition-med), border-color var(--transition-med), background var(--transition-med);
+}
+
+.hero-guide-pill:hover {
+  transform: translateY(-1px);
+  color: #fff;
+  border-color: rgba(230, 0, 0, 0.42);
+  background: rgba(230, 0, 0, 0.12);
+}
+
+@media (max-width: 760px) {
+  .hero {
+    min-height: auto;
+    padding-top: 5.15rem;
+    padding-bottom: 1.35rem;
+  }
+
+  .hero-content {
+    padding: 0.95rem 0.9rem 1.1rem;
+    border-radius: 22px;
+  }
+
+  .hero-brand-frame {
+    border-radius: 18px;
+    margin-bottom: 0.95rem;
+  }
+
+  .hero-subtitle {
+    line-height: 1.5;
+  }
+}

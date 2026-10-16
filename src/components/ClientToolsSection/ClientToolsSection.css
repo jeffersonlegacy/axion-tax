@@ -1,0 +1,413 @@
+.client-tools {
+  padding: 6rem 2rem 5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.client-tools.embedded {
+  padding: 1.5rem 2rem 2rem;
+  max-width: none;
+  margin: 0;
+}
+
+.client-tools.embedded.standalone {
+  padding: 0;
+}
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.tools-grid.single-tool-grid {
+  grid-template-columns: 1fr;
+}
+
+.client-tools.standalone .tools-grid {
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+.client-tools.standalone #tax-readiness-checklist {
+  order: 1;
+}
+
+.client-tools.standalone #quarterly-reserve-planner {
+  order: 2;
+}
+
+.client-tools.standalone #tax-deadline-planner {
+  order: 3;
+}
+
+.tool-card {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  scroll-margin-top: 7rem;
+}
+
+.tool-kicker {
+  margin: 0;
+  color: #ffb6b6;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.tool-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.tool-head h3 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.client-tools.standalone .tool-head h3,
+.client-tools.standalone .next-steps-panel h3 {
+  font-size: clamp(1.45rem, 2.3vw, 1.95rem);
+}
+
+.tool-subtext {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.tool-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+}
+
+.tool-form-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.tool-form-grid input,
+.deadline-controls input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  color: var(--color-text-main);
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.tool-form-grid input:focus,
+.deadline-controls input:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px rgba(230, 0, 0, 0.18);
+}
+
+.tool-result-card {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.result-kicker {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.result-value {
+  margin: 0.4rem 0 0;
+  font-size: 1.12rem;
+  font-weight: 700;
+}
+
+.result-value.positive {
+  color: #5ad08a;
+}
+
+.result-value.negative {
+  color: #ff6c6c;
+}
+
+.result-footnote {
+  margin: 0.35rem 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.87rem;
+}
+
+.reserve-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+}
+
+.metric-item {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 0.8rem;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.metric-item span {
+  display: block;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+}
+
+.metric-item strong {
+  font-size: 1rem;
+}
+
+.tool-inline-note {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.progress-strip {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 999px;
+  height: 32px;
+  overflow: hidden;
+}
+
+.progress-strip .progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #b30000, #ff3f3f);
+  transition: width var(--transition-med);
+}
+
+.progress-strip span {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.82rem;
+}
+
+.checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.45rem;
+  max-height: 300px;
+  overflow: auto;
+  padding-right: 0.3rem;
+}
+
+.checklist label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+.checklist input[type='checkbox'] {
+  margin-top: 0.18rem;
+  accent-color: var(--color-accent);
+}
+
+.tool-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.tool-action-row .btn-primary,
+.tool-action-row .btn-outline {
+  font-size: 0.88rem;
+  padding: 0.6rem 0.95rem;
+}
+
+.tool-explainer {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 0.95rem 1rem;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.tool-explainer strong {
+  display: block;
+  color: #fff;
+  margin-bottom: 0.35rem;
+}
+
+.tool-explainer p {
+  margin: 0.35rem 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.deadline-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.7rem;
+  align-items: flex-end;
+}
+
+.deadline-controls label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.deadline-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.deadline-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+  padding: 0.7rem 0.8rem;
+}
+
+.deadline-list li strong {
+  margin-bottom: 0.2rem;
+  display: block;
+  font-size: 0.9rem;
+}
+
+.deadline-list li span {
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+  display: block;
+}
+
+.deadline-list time {
+  font-size: 0.8rem;
+  color: var(--color-accent);
+  white-space: nowrap;
+}
+
+.deadline-empty {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.tools-disclaimer {
+  margin-top: 1rem;
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.next-steps-panel {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.next-steps-list {
+  margin: 0;
+  padding-left: 1.2rem;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.next-steps-list li {
+  color: var(--color-text-muted);
+}
+
+.next-steps-list strong {
+  display: block;
+  color: var(--color-text-main);
+  font-size: 0.95rem;
+  margin-bottom: 0.2rem;
+}
+
+.next-steps-list p {
+  margin: 0;
+  font-size: 0.87rem;
+  line-height: 1.5;
+}
+
+.packet-actions .btn-primary,
+.packet-actions .btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.deadline-controls .btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.checklist::-webkit-scrollbar {
+  width: 8px;
+}
+
+.checklist::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+}
+
+@media (max-width: 1024px) {
+  .tools-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .tool-form-grid,
+  .reserve-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .deadline-list li {
+    flex-direction: column;
+  }
+
+  .deadline-list time {
+    align-self: flex-start;
+  }
+
+  .next-steps-list {
+    padding-left: 1rem;
+  }
+}
+.client-tools.standalone .tool-subtext {
+  max-width: 760px;
+  line-height: 1.6;
+}
+
+.next-steps-panel {
+  scroll-margin-top: 7rem;
+}
+
+.client-tools.standalone .next-steps-panel {
+  margin-top: 2rem;
+}

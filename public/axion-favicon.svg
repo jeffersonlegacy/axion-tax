@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="axion-grad" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#ff2f2f" />
+      <stop offset="100%" stop-color="#8a0000" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="12" fill="#121212" />
+  <path d="M16 47 31.5 16h3L48 47h-7.2l-2.5-6.5H25.6L23 47H16zm12-12h8l-3.9-10.3z" fill="url(#axion-grad)" />
+</svg>

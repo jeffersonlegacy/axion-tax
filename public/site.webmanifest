@@ -1,0 +1,16 @@
+{
+  "name": "Axion Tax & Beyond",
+  "short_name": "Axion Tax",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#121212",
+  "theme_color": "#121212",
+  "description": "Bilingual tax preparation, bookkeeping, ITIN, and notary services.",
+  "icons": [
+    {
+      "src": "/axion-favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

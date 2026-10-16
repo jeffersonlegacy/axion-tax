@@ -1,0 +1,680 @@
+.home-page {
+  padding-bottom: 4rem;
+  position: relative;
+}
+
+.home-section {
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 2.6rem 0 0;
+}
+
+.home-trust-strip {
+  width: min(1220px, calc(100% - 2rem));
+  margin: -1.4rem auto 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  position: relative;
+  z-index: 5;
+}
+
+.home-trust-strip div {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  padding: 0.85rem 1rem;
+  text-align: center;
+  background: rgba(13, 13, 13, 0.82);
+  color: #f2f2f2;
+  font-size: 0.84rem;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+}
+
+.left-header {
+  text-align: left;
+  margin-bottom: 1.35rem;
+}
+
+.home-kicker {
+  margin: 0 0 0.55rem;
+  color: #ffb7b7;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.section-title.section-title-light {
+  color: #fff;
+  max-width: 920px;
+}
+
+.section-subtitle.section-subtitle-wide {
+  margin: 0;
+  max-width: 760px;
+}
+
+.home-value-header,
+.home-process,
+.home-profile,
+.home-recognition,
+.home-faxion {
+  scroll-margin-top: 7rem;
+}
+
+.home-audience-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-bottom: 1.1rem;
+}
+
+.home-audience-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0.62rem 0.95rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: #f6d6d6;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.home-value-grid,
+.home-process-grid-simple {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.home-value-card,
+.home-process-card-simple,
+.home-award-card,
+.home-review-card,
+.home-profile-panel {
+  background:
+    radial-gradient(circle at top right, rgba(230, 0, 0, 0.14), transparent 38%),
+    linear-gradient(150deg, rgba(12, 12, 12, 0.96), rgba(20, 18, 18, 0.9));
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.home-value-card,
+.home-process-card-simple {
+  display: grid;
+  gap: 0.9rem;
+  align-content: start;
+  min-height: 100%;
+  transition: transform var(--transition-med), border-color var(--transition-med), box-shadow var(--transition-med);
+}
+
+.home-value-card:hover,
+.home-process-card-simple:hover,
+.home-review-card:hover,
+.home-award-card:hover,
+.home-profile-perk:hover {
+  transform: translateY(-4px);
+  border-color: rgba(230, 0, 0, 0.34);
+  box-shadow: 0 26px 56px rgba(0, 0, 0, 0.34), 0 0 0 1px rgba(230, 0, 0, 0.12);
+}
+
+.home-value-icon,
+.home-process-icon {
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.home-value-card h3,
+.home-process-card-simple h3,
+.home-profile-copy h2,
+.home-award-copy h3 {
+  margin: 0;
+}
+
+.home-value-card p,
+.home-process-card-simple p,
+.home-profile-copy p,
+.home-profile-perk p,
+.home-award-copy p,
+.home-review-card p {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.home-process-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.home-process-step-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 3rem;
+  height: 2.3rem;
+  padding: 0 0.75rem;
+  border-radius: 999px;
+  background: rgba(230, 0, 0, 0.14);
+  border: 1px solid rgba(230, 0, 0, 0.42);
+  color: #ffd1d1;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.home-profile-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+  gap: 1.15rem;
+  align-items: start;
+}
+
+.home-profile-copy {
+  display: grid;
+  gap: 0.95rem;
+}
+
+.home-profile-checklist {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.45rem;
+  color: #f1f1f1;
+}
+
+.home-profile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.home-profile-side {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.home-profile-perk {
+  display: grid;
+  gap: 0.55rem;
+  padding: 1rem 1.05rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  transition: transform var(--transition-med), border-color var(--transition-med), box-shadow var(--transition-med);
+}
+
+.home-profile-perk-top {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.home-profile-perk-top h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #fff;
+}
+
+.home-recognition-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.home-award-card {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.95fr) minmax(0, 1.05fr);
+  overflow: hidden;
+  padding: 0;
+}
+
+.home-award-media {
+  min-height: 100%;
+  background: #0b0b0b;
+}
+
+.home-award-media img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.home-award-copy {
+  display: grid;
+  align-content: center;
+  gap: 0.8rem;
+  padding: 1.35rem 1.4rem;
+}
+
+.home-award-tag {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  border: 1px solid rgba(230, 0, 0, 0.45);
+  background: rgba(230, 0, 0, 0.14);
+  color: #ffc9c9;
+  border-radius: 999px;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.home-review-column {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.home-review-card {
+  display: grid;
+  gap: 0.8rem;
+  transition: transform var(--transition-med), border-color var(--transition-med), box-shadow var(--transition-med);
+}
+
+.home-review-stars {
+  display: flex;
+  gap: 0.22rem;
+  color: #ffb7b7;
+}
+
+.home-review-author {
+  display: grid;
+  gap: 0.12rem;
+}
+
+.home-review-author strong {
+  color: #fff;
+}
+
+.home-review-author span {
+  color: var(--color-text-muted);
+  font-size: 0.84rem;
+}
+
+.home-review-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.home-faxion {
+  padding-top: 2.4rem;
+}
+
+.faxion-grid {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.faxion-spotlight {
+  display: grid;
+  gap: 1rem;
+  padding: 1.2rem;
+  background:
+    radial-gradient(circle at top right, rgba(230, 0, 0, 0.2), transparent 34%),
+    linear-gradient(150deg, rgba(11, 11, 11, 0.98), rgba(24, 18, 18, 0.94));
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.faxion-spotlight-main {
+  display: grid;
+  grid-template-columns: minmax(300px, 1.05fr) minmax(0, 0.95fr);
+  gap: 0.95rem;
+  align-items: stretch;
+}
+
+.faxion-spotlight-copy {
+  display: grid;
+  align-content: start;
+  gap: 0.72rem;
+}
+
+.faxion-spotlight-visual {
+  position: relative;
+  margin: 0;
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+  aspect-ratio: 16 / 9.5;
+  box-shadow: 0 18px 34px rgba(0, 0, 0, 0.26);
+}
+
+.faxion-spotlight-visual img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.faxion-spotlight-visual figcaption {
+  position: absolute;
+  left: 0.9rem;
+  bottom: 0.9rem;
+  padding: 0.42rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(8, 8, 10, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #f7d4d4;
+  font-size: 0.76rem;
+  letter-spacing: 0.04em;
+}
+
+.faxion-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.faxion-category,
+.faxion-position {
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ffbeb8;
+}
+
+.faxion-number {
+  font-size: clamp(3.3rem, 6vw, 5.1rem);
+  line-height: 0.9;
+  font-family: var(--font-heading);
+  color: rgba(255, 255, 255, 0.12);
+  text-shadow: 0 0 30px rgba(230, 0, 0, 0.15);
+}
+
+.faxion-spotlight h3 {
+  margin: 0;
+  font-size: clamp(1.45rem, 2.6vw, 2.15rem);
+  line-height: 1.05;
+  color: #fff;
+  max-width: 18ch;
+}
+
+.faxion-spotlight p {
+  margin: 0;
+  color: #d7d7d7;
+  font-size: 0.94rem;
+  line-height: 1.5;
+  max-width: 35rem;
+}
+
+.faxion-progress {
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.faxion-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgba(255, 183, 183, 0.8), rgba(230, 0, 0, 0.95));
+  box-shadow: 0 0 18px rgba(230, 0, 0, 0.45);
+}
+
+.faxion-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.faxion-nav-btn {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  padding: 0.78rem 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  transition: transform var(--transition-med), border-color var(--transition-med), box-shadow var(--transition-med);
+}
+
+.faxion-nav-btn.active,
+.faxion-nav-btn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(230, 0, 0, 0.42);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(230, 0, 0, 0.14);
+}
+
+.faxion-rail {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(220px, 250px);
+  gap: 0.7rem;
+  overflow-x: auto;
+  padding: 0.1rem 0 0.35rem;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(230, 0, 0, 0.55) rgba(255, 255, 255, 0.08);
+}
+
+.faxion-rail-shell {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.faxion-rail-card {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 22px;
+  padding: 0.78rem;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01)),
+    linear-gradient(150deg, rgba(12, 12, 12, 0.96), rgba(22, 21, 21, 0.92));
+  color: #fff;
+  text-align: left;
+  display: grid;
+  grid-template-columns: 70px minmax(0, 1fr);
+  gap: 0.62rem;
+  align-items: start;
+  cursor: pointer;
+  transition: transform var(--transition-med), border-color var(--transition-med), box-shadow var(--transition-med), background var(--transition-med);
+  scroll-snap-align: start;
+}
+
+.faxion-rail-card:hover,
+.faxion-rail-card.active {
+  transform: translateY(-3px);
+  border-color: rgba(230, 0, 0, 0.4);
+  box-shadow: 0 20px 36px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(230, 0, 0, 0.14);
+  background:
+    radial-gradient(circle at right center, rgba(230, 0, 0, 0.14), transparent 42%),
+    linear-gradient(150deg, rgba(14, 14, 14, 0.98), rgba(24, 19, 19, 0.94));
+}
+
+.faxion-rail-card.active {
+  box-shadow: 0 20px 36px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(230, 0, 0, 0.18), 0 0 24px rgba(230, 0, 0, 0.12);
+}
+
+.faxion-rail-number {
+  font-size: 0.72rem;
+  color: #ffd1d1;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.faxion-rail-thumb {
+  width: 70px;
+  height: 62px;
+  object-fit: cover;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.faxion-rail-copy {
+  display: grid;
+  gap: 0.32rem;
+  min-width: 0;
+}
+
+.faxion-rail-category {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.faxion-rail-card strong {
+  font-size: 0.9rem;
+  line-height: 1.22;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.faxion-rail-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.faxion-mini-progress {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.faxion-mini-step {
+  width: 26px;
+  height: 12px;
+  border: 0;
+  padding: 0;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.faxion-mini-step span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: rgba(255, 255, 255, 0.12);
+  transition: transform var(--transition-med), background var(--transition-med), box-shadow var(--transition-med);
+}
+
+.faxion-mini-step:hover span,
+.faxion-mini-step.active span {
+  background: linear-gradient(90deg, rgba(255, 196, 196, 0.95), rgba(230, 0, 0, 0.95));
+  transform: scaleY(1.05);
+  box-shadow: 0 0 16px rgba(230, 0, 0, 0.35);
+}
+
+.faxion-rail-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 180px;
+  justify-content: flex-end;
+  color: #ffd5d5;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.faxion-rail-status-line {
+  width: 94px;
+  height: 6px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.faxion-rail-status-line span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgba(255, 196, 196, 0.92), rgba(230, 0, 0, 0.95));
+  box-shadow: 0 0 14px rgba(230, 0, 0, 0.34);
+}
+
+@media (max-width: 1100px) {
+  .home-value-grid,
+  .home-process-grid-simple,
+  .home-trust-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .home-profile-panel,
+  .home-recognition-grid,
+  .home-award-card,
+  .faxion-grid,
+  .faxion-spotlight-main {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .home-section {
+    width: min(1180px, calc(100% - 1.1rem));
+  }
+
+  .home-trust-strip,
+  .home-value-grid,
+  .home-process-grid-simple {
+    grid-template-columns: 1fr;
+  }
+
+  .home-trust-strip {
+    margin-top: -0.9rem;
+  }
+
+  .home-profile-actions,
+  .home-review-links,
+  .faxion-actions,
+  .faxion-topline,
+  .faxion-rail-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .faxion-spotlight {
+    padding: 0.95rem;
+  }
+
+  .faxion-rail-card {
+    grid-template-columns: 68px minmax(0, 1fr);
+    padding: 0.78rem;
+  }
+
+  .faxion-rail-thumb {
+    width: 68px;
+    height: 60px;
+  }
+
+  .faxion-rail-card:hover,
+  .faxion-rail-card.active {
+    transform: none;
+  }
+
+  .faxion-rail {
+    grid-auto-columns: minmax(220px, 80vw);
+  }
+
+  .faxion-rail-status {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}

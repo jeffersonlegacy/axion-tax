@@ -1,0 +1,41 @@
+{
+  "name": "axion-tax",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "sh -c 'for PORT in 5174 8797; do PID=$(lsof -tiTCP:$PORT -sTCP:LISTEN); [ -n \"$PID\" ] && kill $PID || true; done; concurrently -k \"npm:dev:api\" \"npm:dev:client\"'",
+    "dev:client": "vite --host 127.0.0.1 --port 5174 --strictPort",
+    "dev:api": "node server/index.mjs",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview --host 127.0.0.1 --port 4174 --strictPort",
+    "start": "node server/index.mjs"
+  },
+  "dependencies": {
+    "compression": "^1.8.1",
+    "concurrently": "^9.2.1",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.3.0",
+    "helmet": "^8.1.0",
+    "lucide-react": "^0.575.0",
+    "multer": "^2.1.1",
+    "react": "^19.2.0",
+    "react-confetti": "^6.4.0",
+    "react-dom": "^19.2.0",
+    "resend": "^6.9.3",
+    "twilio": "^5.12.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "vite": "^7.3.1"
+  }
+}
