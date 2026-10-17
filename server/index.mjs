@@ -141,7 +141,7 @@ const buildSeedDemoWorkspace = () => {
         laneId: 'jobs',
         kind: 'upload',
         name: '2025-W2-Bay-Area-Health-Systems.svg',
-        note: 'OCR Verified [W-2] · Box 1 Wages: $94,200.00 · Fed Withheld: $14,820.00 · SHA-256: 8f4c...e91a',
+        note: 'Seeded Demo Fixture [W-2] · Box 1 Wages: $94,200.00 · Fed Withheld: $14,820.00 · SHA-256: 8f4c...e91a',
         mimeType: 'image/svg+xml',
         size: 1840,
         storedName: '2025-W2-Bay-Area-Health-Systems.svg',
@@ -152,7 +152,7 @@ const buildSeedDemoWorkspace = () => {
         laneId: 'business',
         kind: 'upload',
         name: '2025-1099-NEC-Stripe-Consulting.svg',
-        note: 'OCR Verified [1099-NEC] · Box 1 Nonemployee Comp: $68,400.00 · Payer TIN Verified · SHA-256: 3a9d...b102',
+        note: 'Seeded Demo Fixture [1099-NEC] · Box 1 Nonemployee Comp: $68,400.00 · Payer TIN Sample · SHA-256: 3a9d...b102',
         mimeType: 'image/svg+xml',
         size: 1920,
         storedName: '2025-1099-NEC-Stripe-Consulting.svg',
@@ -174,7 +174,7 @@ const buildSeedDemoWorkspace = () => {
         laneId: 'personal',
         kind: 'upload',
         name: 'CA-Real-ID-Verification-Vance.svg',
-        note: 'OCR Verified [Gov ID] · Primary Taxpayer Identity & Address Confirmed',
+        note: 'Seeded Demo Fixture [Gov ID] · Primary Taxpayer Identity & Address Sample',
         mimeType: 'image/svg+xml',
         size: 1640,
         storedName: 'CA-Real-ID-Verification-Vance.svg',
@@ -524,7 +524,7 @@ const buildWorkspaceResponse = (workspace) => {
   };
 };
 
-const getWorkspaceContext = async (token, req = null) => {
+const getWorkspaceContext = async (token, _req = null) => {
   const store = await readPortalStore();
   let index = store.workspaces.findIndex((entry) => entry.token === token);
   if (index === -1 && token === DEMO_WORKSPACE_TOKEN) {
@@ -532,31 +532,6 @@ const getWorkspaceContext = async (token, req = null) => {
     store.workspaces.push(seeded);
     await writePortalStore(store);
     index = store.workspaces.length - 1;
-  }
-  if (index === -1 && req?.headers?.['x-portal-snapshot']) {
-    try {
-      const decoded = JSON.parse(decodeURIComponent(String(req.headers['x-portal-snapshot'])));
-      if (decoded && decoded.client?.email) {
-        const rehydrated = {
-          id: decoded.id || createId('ws'),
-          token,
-          createdAt: decoded.createdAt || new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          client: decoded.client,
-          taxProfessional: decoded.taxProfessional || sanitizeTaxProfessional('marcus'),
-          appointments: Array.isArray(decoded.appointments) ? decoded.appointments : [],
-          documents: Array.isArray(decoded.documents) ? decoded.documents : [],
-          checklist: mergeChecklist(decoded.checklist),
-          updates: { ...DEFAULT_UPDATES, ...(decoded.updates || {}) },
-          scheduleC: decoded.scheduleC || null,
-        };
-        store.workspaces.push(rehydrated);
-        await writePortalStore(store);
-        index = store.workspaces.length - 1;
-      }
-    } catch {
-      // Ignore malformed snapshot header
-    }
   }
   if (index === -1) return null;
   return { store, index, workspace: store.workspaces[index] };

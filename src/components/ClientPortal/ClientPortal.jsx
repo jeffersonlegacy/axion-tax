@@ -203,7 +203,7 @@ const classifyTaxDocument = async (file, isSpanish = false) => {
   }
 
   const sizeKb = Math.max(1, Math.round(file.size / 1024));
-  const autoNote = `OCR Triage [${docClass}] · ${extractedFields} · ${sizeKb} KB · SHA-256: ${sha256Short}`;
+  const autoNote = `Intake Triage [${docClass}] · ${extractedFields} · ${sizeKb} KB · SHA-256: ${sha256Short}`;
 
   return {
     docClass,
@@ -304,14 +304,6 @@ const ClientPortal = () => {
   const apiRequest = useCallback(async (path, options = {}) => {
     const headers = { ...(options.headers || {}) };
     if (session?.token) headers['x-portal-token'] = session.token;
-    const cachedSnapshot = readCachedWorkspace();
-    if (cachedSnapshot) {
-      try {
-        headers['x-portal-snapshot'] = encodeURIComponent(JSON.stringify(cachedSnapshot));
-      } catch {
-        // Ignore snapshot serialization error
-      }
-    }
 
     let body = options.body;
     const isFormData = typeof FormData !== 'undefined' && body instanceof FormData;
@@ -976,8 +968,8 @@ const ClientPortal = () => {
                 <strong>{txt('Explore a Pre-Loaded W-2 + 1099-NEC Client Workspace', 'Explorar Espacio Pre-Cargado (W-2 + 1099-NEC)')}</strong>
                 <span>
                   {txt(
-                    'Opens Elena Vance’s live tax file with 4 OCR-verified documents, SHA-256 hashes, booked strategy session, and Schedule C summary.',
-                    'Abre el expediente activo de Elena Vance con 4 documentos verificados por OCR, cita agendada y resumen de Schedule C.'
+                    'Opens Elena Vance’s seeded demo workspace with 4 sample tax documents, SHA-256 file hashes, booked strategy session, and Schedule C summary.',
+                    'Abre el expediente demo de Elena Vance con 4 documentos de muestra, hashes SHA-256, cita agendada y resumen de Schedule C.'
                   )}
                 </span>
               </div>
@@ -1409,14 +1401,14 @@ const ClientPortal = () => {
               </div>
               <p className="portal-card-copy">
                 {copy(
-                  `Upload one clean file at a time. Client-side OCR triage automatically classifies your form, verifies its SHA-256 hash, and routes it to the right lane for ${advisorName}.`,
-                  `Suba un archivo limpio a la vez. El triaje OCR clasifica automaticamente su formulario, verifica su hash SHA-256 y lo envia al carril correcto para ${advisorName}.`,
+                  `Upload one clean file at a time. Client-side intake triage classifies your form by filename, computes its SHA-256 hash, and routes it to the right lane for ${advisorName}.`,
+                  `Suba un archivo limpio a la vez. El triaje clasifica su formulario por nombre, calcula su hash SHA-256 y lo envia al carril correcto para ${advisorName}.`,
                   `Upload a file or test with a synthetic tax form below.`,
                   `Suba un archivo o pruebe con un formulario sintetico abajo.`
                 )}
               </p>
               <div className="portal-sample-bar">
-                <span>{txt('Quick OCR Test:', 'Prueba rapida OCR:')}</span>
+                <span>{txt('Quick Triage Test:', 'Prueba rapida de triaje:')}</span>
                 <button type="button" className="portal-secondary-btn portal-inline-action" onClick={() => generateSampleOcrFile('1099')}>
                   {txt('Load Sample 1099-NEC', 'Cargar 1099-NEC de prueba')}
                 </button>
@@ -1432,7 +1424,7 @@ const ClientPortal = () => {
                 {uploadTriage && (
                   <div className="portal-ocr-triage">
                     <div className="portal-ocr-triage-head">
-                      <span className="portal-row-chip ready">{txt('OCR TRIAGE PASS', 'TRIAJE OCR LISTO')}</span>
+                      <span className="portal-row-chip ready">{txt('FILENAME + SHA-256 TRIAGE', 'TRIAJE + SHA-256 LISTO')}</span>
                       <strong>{uploadTriage.docClass}</strong>
                     </div>
                     <span>{uploadTriage.extractedFields}</span>
@@ -1442,7 +1434,7 @@ const ClientPortal = () => {
                   </div>
                 )}
                 <label className="portal-field">
-                  {txt('Quick note (auto-filled by OCR triage)', 'Nota rapida (autocompletada por OCR)')}
+                  {txt('Quick note (auto-filled by intake triage)', 'Nota rapida (autocompletada por triaje)')}
                   <textarea value={uploadNote} onChange={(event) => setUploadNote(event.target.value)} placeholder={txt(`Example: ${advisorName}, this is the corrected 1099 from Stripe.`, `Ejemplo: ${advisorName}, este es el 1099 corregido de Stripe.`)} />
                 </label>
                 {documentSaveState.error && <p className="portal-inline-error">{documentSaveState.error}</p>}
